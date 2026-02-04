@@ -20,6 +20,9 @@ class EventEmitter {
 
 const emitter = new EventEmitter();
 
+// track currently logged-in user
+let currentUser = null;
+
 // object to store event counts
 const eventCount = {
   login: 0,
@@ -59,8 +62,17 @@ emitter.on("user-purchase", (username, item) => {
 });
 
 emitter.on("profile-update", (username) => {
+  // legacy single-arg handler (if used)
   eventCount.profileUpdate++;
   const message = `${username} updated profile`;
+  console.log(message);
+  displayOutput(message);
+});
+
+// modern profile-update handler (oldName, newName)
+emitter.on("profile-update-new", (oldName, newName) => {
+  eventCount.profileUpdate++;
+  const message = `${oldName} updated profile to ${newName}`;
   console.log(message);
   displayOutput(message);
 });
@@ -76,20 +88,50 @@ emitter.on("summary", () => {
 
 // Button handler functions
 function login() {
-  emitter.emit("user-login", "User");
+  const usernameInput = document.getElementById("usernameInput");
+  const username = (usernameInput && usernameInput.value.trim()) ? usernameInput.value.trim() : "User";
+  currentUser = username;
+  emitter.emit("user-login", username);
+  if (usernameInput) usernameInput.value = "";
 }
 
 function logout() {
-  emitter.emit("user-logout", "User");
+  const username = currentUser || "User";
+  emitter.emit("user-logout", username);
+  currentUser = null;
 }
 
 function purchase() {
-  const item = prompt("Enter item name:") || "Item";
-  emitter.emit("user-purchase", "User", item);
+  const purchaseInput = document.getElementById("purchaseInput");
+  const item = purchaseInput && purchaseInput.value.trim() ? purchaseInput.value.trim() : null;
+  if (!currentUser) {
+    displayOutput("No user is logged in. Please login first.");
+    return;
+  }
+  if (!item) {
+    displayOutput("Please enter an item name to purchase.");
+    return;
+  }
+  emitter.emit("user-purchase", currentUser, item);
+  if (purchaseInput) purchaseInput.value = "";
 }
 
 function updateProfile() {
-  emitter.emit("profile-update", "User");
+  const newNameInput = document.getElementById("newNameInput");
+  const newName = newNameInput && newNameInput.value.trim() ? newNameInput.value.trim() : null;
+  if (!currentUser) {
+    displayOutput("No user is logged in. Please login first.");
+    return;
+  }
+  if (!newName) {
+    displayOutput("Please enter a new name for profile update.");
+    return;
+  }
+  const oldName = currentUser;
+  currentUser = newName;
+  // emit new-style profile-update with old and new name
+  emitter.emit("profile-update-new", oldName, newName);
+  if (newNameInput) newNameInput.value = "";
 }
 
 function showSummary() {

@@ -27,6 +27,15 @@ button:hover {
   background-color: #45a049;
 }
 
+input[type="text"] {
+  padding: 8px 10px;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
 .output {
   background: white;
   padding: 15px;
