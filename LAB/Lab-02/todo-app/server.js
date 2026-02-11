@@ -13,9 +13,18 @@ app.get("/todos", (req, res) => {
 app.post("/todos", (req, res) => {
   const todo = {
     id: Date.now(),
-    text: req.body.text
+    text: req.body.text,
+    status: "pending"
   };
   todos.push(todo);
+  res.json(todo);
+});
+
+app.put("/todos/:id", (req, res) => {
+  const todo = todos.find(t => t.id == req.params.id);
+  if (todo) {
+    todo.status = "completed";
+  }
   res.json(todo);
 });
 

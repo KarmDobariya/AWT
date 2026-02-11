@@ -1,42 +1,64 @@
-const list = document.getElementById("todoList");
-const input = document.getElementById("todoInput");
+function addTask() {
+    const taskText = taskInput.value.trim();
+    const deadline = deadlineInput.value;
 
-// Load todos
-async function loadTodos() {
-  const res = await fetch("/todos");
-  const todos = await res.json();
+    if (taskText === "" || deadline === "") {
+        alert("Enter task and deadline");
+        return;
+    }
 
-  list.innerHTML = "";
-  todos.forEach(todo => {
     const li = document.createElement("li");
+    li.dataset.deadline = deadline;
+
     li.innerHTML = `
-      ${todo.text}
-      <button onclick="deleteTodo(${todo.id})">❌</button>
+        <span>
+            ${taskText} <br>
+            <small>Deadline: ${deadline}</small>
+            <div class="status"></div>
+        </span>
+        <div class="task-buttons">
+            <button class="done-btn" onclick="markDone(this)">Done</button>
+        </div>
     `;
-    list.appendChild(li);
-  });
+
+    document.getElementById("pendingList").appendChild(li);
+    taskInput.value = "";
+    deadlineInput.value = "";
+
+    checkDeadline(li);
 }
 
-// Add todo
-async function addTodo() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  await fetch("/todos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text })
-  });
-
-  input.value = "";
-  loadTodos();
+function markDone(button) {
+    const task = button.closest("li");
+    task.querySelector(".task-buttons").innerHTML = `
+        <button class="back-btn" onclick="moveBack(this)">Pending</button>
+        <button class="delete-btn" onclick="removeTask(this)">Delete</button>
+    `;
+    task.querySelector(".status").innerHTML = "";
+    document.getElementById("completedList").appendChild(task);
 }
 
-// Delete todo
-async function deleteTodo(id) {
-  await fetch(`/todos/${id}`, { method: "DELETE" });
-  loadTodos();
+function moveBack(button) {
+    const task = button.closest("li");
+    task.querySelector(".task-buttons").innerHTML = `
+        <button class="done-btn" onclick="markDone(this)">Done</button>
+    `;
+    document.getElementById("pendingList").appendChild(task);
+    checkDeadline(task);
 }
 
-// Initial load
-loadTodos();
+function removeTask(button) {
+    button.closest("li").remove();
+}
+
+function checkDeadline(task) {
+    const deadline = new Date(task.dataset.deadline);
+    const now = new Date();
+
+    const statusDiv = task.querySelector(".status");
+    if (now > deadline) {
+        statusDiv.innerHTML = "<span class='overdue'>OVERDUE</span>";
+    } else {
+        statusDiv.innerHTML = "";
+    }
+}

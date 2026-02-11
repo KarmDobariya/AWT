@@ -1,44 +1,73 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
 }
 
 .container {
-  width: 350px;
-  margin: 80px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
+    width: 380px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 h1 {
-  text-align: center;
+    text-align: center;
 }
 
 .input-box {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-input {
-  flex: 1;
-  padding: 8px;
+input, button {
+    padding: 8px;
 }
 
 button {
-  padding: 8px 12px;
-  cursor: pointer;
+    border: none;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.task-section {
+    margin-top: 15px;
 }
 
 ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
+    list-style: none;
+    padding: 0;
 }
 
 li {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
+    margin-bottom: 8px;
+    padding: 8px;
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.task-buttons {
+    margin-top: 6px;
+    display: flex;
+    gap: 5px;
+}
+
+.done-btn { background: green; }
+.back-btn { background: orange; }
+.delete-btn { background: red; }
+
+.overdue {
+    color: red;
+    font-weight: bold;
 }
