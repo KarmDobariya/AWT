@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Gateway</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let timeLeft = 300;
+            const timerDisplay = document.getElementById('timer');
+            const doneBtn = document.getElementById('done-btn');
+            const expiredMsg = document.getElementById('expired-msg');
+
+            const timerId = setInterval(function() {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                if (seconds < 10) seconds = "0" + seconds;
+                timerDisplay.textContent = minutes + ":" + seconds;
+
+                if (timeLeft < 60) {
+                    timerDisplay.style.color = 'red';
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    doneBtn.style.display = 'none';
+                    expiredMsg.style.display = 'block';
+                }
+            }, 1000);
+        });
+    </script>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <div style="background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; width: 400px;">
+        <h2>Payment Gateway</h2>
+        <h3>Total Amount to Pay: ${{ total_amount }}</h3>
+        <div style="margin: 20px 0; font-size: 24px;" id="timer-container">
+            Time Remaining: <span id="timer">5:00</span>
+        </div>
+        
+        <a href="{% url 'success' %}" id="done-btn" style="display: inline-block; padding: 12px 24px; font-size: 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; margin-top: 10px;">
+            Done
+        </a>
+
+        <div id="expired-msg" style="display: none; color: red; margin-top: 20px;">
+            <h3>Session Expired!</h3>
+            <a href="{% url 'home' %}" style="display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; margin-top: 10px;">
+                Go Back
+            </a>
+        </div>
+    </div>
+</body>
+</html>
